@@ -1,0 +1,66 @@
+# ============================================================
+# Flutter CI Workflow
+# ============================================================
+# 役割：
+#   コードの品質を自動チェックする (解析・テスト)
+#   Linuxランナーのみ使用するので課金はほぼゼロ
+#
+# トリガー：
+#   - main ブランチへ push したとき
+#   - Pull Request を作成・更新したとき
+#   - Actions タブから手動実行
+# ============================================================
+
+name: Flutter CI
+
+on:
+  push:
+    branches:
+      - main       # main に push されたとき
+  pull_request:
+    branches:
+      - main       # main への PR が作成・更新されたとき
+  workflow_dispatch: # Actions タブから手動実行できるようにする
+
+# 同じブランチで複数のワークフローが走り始めたら古い方をキャンセル
+# → 連続して push したときの無駄な課金を防止
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Job 1: コード解析 & テスト
+  # ─────────────────────────────────────────────
+  analyze_and_test:
+    name: Analyze & Test
+    runs-on: ubuntu-latest          # Linux ランナー（無料枠が広い）
+    timeout-minutes: 15             # 暴走防止: 15 分で強制終了
+
+    steps:
+      # 1. リポジトリのコードをチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Flutter SDK をセットアップ
+      #    flutter-version は pubspec.yaml の sdk 制約に合わせて自動選択 (stable)
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"   # 3.x 系の最新 stable を使用
+          channel: stable
+          cache: true              # SDK をキャッシュして次回以降を高速化
+
+      # 3. 依存パッケージを取得
+      - name: Get packages
+        run: flutter pub get
+
+      # 4. 静的解析（lint）
+      #    analysis_options.yaml のルールに従ってコードをチェック
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      # 5. テスト実行
+      #    test/ ディレクトリがなくてもエラーにならない
+      - name: Test
+        run: flutter test --reporter=github
