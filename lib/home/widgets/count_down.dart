@@ -44,6 +44,7 @@ class CountDownTimer extends ChangeNotifier {
   }
 
   void startTimer(int minutes) {
+    _isTimeSet = true;
     _endTime = DateTime.now().add(Duration(minutes: minutes));
     _startTicking();
   }
