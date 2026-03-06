@@ -11,6 +11,7 @@ class RegisterTask extends StatefulWidget {
 
 class _RegisterTaskState extends State<RegisterTask> {
   late TextEditingController _controller;
+  int _duration = 10;
 
   @override
   void initState() {
@@ -45,6 +46,8 @@ class _RegisterTaskState extends State<RegisterTask> {
         ),
         onPressed: () {
           _controller.clear();
+          _duration = 10;
+          final wheelController = FixedExtentScrollController(initialItem: 9);
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -52,83 +55,184 @@ class _RegisterTaskState extends State<RegisterTask> {
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             builder: (BuildContext ctx) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: 24,
-                  right: 24,
-                  top: 24,
-                  bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: cs.onSurface.withAlpha(50),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+              return StatefulBuilder(
+                builder: (BuildContext ctx, StateSetter setModalState) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      top: 24,
+                      bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      AppStrings.newTaskModalTitle,
-                      style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _controller,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: AppStrings.taskNameHint,
-                        filled: true,
-                        fillColor: cs.surfaceContainerHighest.withAlpha(80),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                        Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: cs.onSurface.withAlpha(50),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          AppStrings.newTaskModalTitle,
+                          style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: _controller,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            hintText: AppStrings.taskNameHint,
+                            filled: true,
+                            fillColor: cs.surfaceContainerHighest.withAlpha(80),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          AppStrings.taskDurationHint,
+                          style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 200,
+                          child: Stack(
+                            children: [
+                              Center(
+                                child: Container(
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: cs.primaryContainer.withAlpha(100),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                              ListWheelScrollView.useDelegate(
+                                controller: wheelController,
+                                itemExtent: 44,
+                                perspective: 0.006,
+                                diameterRatio: 1.4,
+                                physics: const FixedExtentScrollPhysics(),
+                                overAndUnderCenterOpacity: 0.4,
+                                onSelectedItemChanged: (index) {
+                                  setModalState(() => _duration = index + 1);
+                                },
+                                childDelegate: ListWheelChildBuilderDelegate(
+                                  childCount: 120,
+                                  builder: (context, index) {
+                                    return Center(
+                                      child: Text(
+                                        '${index + 1}分',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleMedium,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: 70,
+                                child: IgnorePointer(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Theme.of(ctx).colorScheme.surface,
+                                          Theme.of(
+                                            ctx,
+                                          ).colorScheme.surface.withAlpha(0),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: 70,
+                                child: IgnorePointer(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Theme.of(ctx).colorScheme.surface,
+                                          Theme.of(
+                                            ctx,
+                                          ).colorScheme.surface.withAlpha(0),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text(AppStrings.cancelButton),
                               ),
                             ),
-                            child: const Text(AppStrings.cancelButton),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (_controller.text.trim().isNotEmpty) {
-                                await addTask(_controller.text.trim(), 0);
-                              }
-                              if (ctx.mounted) Navigator.pop(ctx);
-                            },
-                            child: const Text(AppStrings.saveButton),
-                          ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_controller.text.trim().isNotEmpty) {
+                                    await addTask(
+                                      _controller.text.trim(),
+                                      _duration,
+                                    );
+                                  }
+                                  if (ctx.mounted) Navigator.pop(ctx);
+                                },
+                                child: const Text(AppStrings.saveButton),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  );
+                },
               );
             },
-          );
+          ).then((_) => wheelController.dispose());
         },
       ),
     );

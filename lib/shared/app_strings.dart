@@ -58,6 +58,7 @@ abstract final class AppStrings {
   static const registerTaskButton = 'タスクを追加する';
   static const newTaskModalTitle = '新しいタスク';
   static const taskNameHint = 'タスク名を入力';
+  static const taskDurationHint = 'このタスクの所要時間を入力してください';
 
   // ── 持ち物管理モーダル ───────────────────────────────────────
   static const addItemButton = '持ち物を追加する';
