@@ -38,10 +38,8 @@ class CountDownTimer extends ChangeNotifier {
     return '$m:$s';
   }
 
-  // コンストラクタでタイマーを開始
-  CountDownTimer({int minutes = 1}) {
-    startTimer(minutes);
-  }
+  // タイマーはセット時に開始する
+  CountDownTimer();
 
   void startTimer(int minutes) {
     _isTimeSet = true;

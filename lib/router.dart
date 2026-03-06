@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 // 共有タイマーインスタンス
-final sharedTimer = CountDownTimer(minutes: 0);
+final sharedTimer = CountDownTimer();
 
 final goRouter = GoRouter(
   // アプリが起動した時

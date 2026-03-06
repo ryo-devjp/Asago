@@ -53,8 +53,6 @@
    │                        stopAlert()
    │                              ↓
    │                          [停止]
-   │
-   └──startTimer(0)──→ [カウント中] (残り0分 = 即タイムアップ)
 ```
 
 ### UI監視方法
@@ -128,7 +126,7 @@ Settingscreen(onTimeSelected: (time) => sharedTimer.setTargetTime(time))
 **ファイル**: `lib/router.dart`
 
 ```dart
-final sharedTimer = CountDownTimer(minutes: 0);
+final sharedTimer = CountDownTimer();
 ```
 
 | 参照元                         | 用途                                                              |
