@@ -166,18 +166,20 @@ Hive `tasks` Box を `ValueListenableBuilder` で監視。
 ### RegisterTask
 
 **ファイル**: `lib/setting/widgets/register_task.dart`
-**状態**: `StatefulWidget`（`TextEditingController` 管理）
+**状態**: `StatefulWidget`（`TextEditingController` + `_duration` 管理）
 
 **モーダル仕様**:
 
-| 要素           | 詳細                                                    |
-| -------------- | ------------------------------------------------------- |
-| トリガー       | "タスクを追加する" `OutlinedButton`                     |
-| 表示方法       | `showModalBottomSheet`（角丸20px、キーボード追従）      |
-| 入力           | `TextField`（autofocus、ヒント: "タスク名を入力"）      |
-| アクション     | キャンセル (`OutlinedButton`) / 保存 (`ElevatedButton`) |
-| 保存処理       | `addTask(text, 0)` → モーダル閉じる                     |
-| バリデーション | 空文字はスキップ（`trim().isNotEmpty` チェック）        |
+| 要素           | 詳細                                                                                     |
+| -------------- | ---------------------------------------------------------------------------------------- |
+| トリガー       | "タスクを追加する" `OutlinedButton`                                                      |
+| 表示方法       | `showModalBottomSheet` + `StatefulBuilder`（角丸20px、キーボード追従）                   |
+| 入力1          | `TextField`（autofocus、ヒント: "タスク名を入力"）                                       |
+| 入力2          | `ListWheelScrollView`（1〜120分、1分刻み、デフォルト10分）ドラムロール形式、高さ200px    |
+| アクション     | キャンセル (`OutlinedButton`) / 保存 (`ElevatedButton`)                                  |
+| 保存処理       | `addTask(text, _duration)` → モーダル閉じる                                              |
+| バリデーション | 空文字はスキップ（`trim().isNotEmpty` チェック）                                         |
+| リセット       | モーダル開くたびに `_controller.clear()` + `_duration = 10` + `wheelController` を再生成 |
 
 ### SettingItemList
 
@@ -236,4 +238,4 @@ Hive `tasks` Box を `ValueListenableBuilder` で監視。
 | タスク登録       | `registerTaskButton` / `newTaskModalTitle` / `taskNameHint`     | タスクを追加する / 新しいタスク / タスク名を入力 |
 | 持ち物登録       | `addItemButton` / `itemsModalTitle` / `itemNameHint`            | 持ち物を追加する / 持ち物リスト / 持ち物名を入力 |
 
-**動的文字列**: `formattedDuration(h, m, s)`, `completedTaskSection(count)`, `completedItemSection(count)`
+**動的文字列**: `formattedDuration(h, m, s)`, `completedTaskSection(count)`, `completedItemSection(count)`, `taskDurationLabel(minutes)` ("所要時間：N分")
