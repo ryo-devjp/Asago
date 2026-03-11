@@ -178,7 +178,7 @@ Hive `tasks` Box を `ValueListenableBuilder` で監視。
 | 入力2          | `ListWheelScrollView`（1〜120分、1分刻み、デフォルト10分）ドラムロール形式、高さ200px    |
 | アクション     | キャンセル (`OutlinedButton`) / 保存 (`ElevatedButton`)                                  |
 | 保存処理       | `addTask(text, _duration)` → モーダル閉じる                                              |
-| バリデーション | 空文字はスキップ（`trim().isNotEmpty` チェック）                                         |
+| バリデーション | 空文字時はエラーテキスト表示・モーダルを閉じない（`StatefulBuilder` + `setModalState`） |
 | リセット       | モーダル開くたびに `_controller.clear()` + `_duration = 10` + `wheelController` を再生成 |
 
 ### SettingItemList
@@ -191,7 +191,7 @@ Hive `tasks` Box を `ValueListenableBuilder` で監視。
 
 **ファイル**: `lib/setting/widgets/register_items.dart`
 
-`RegisterTask` と同一構造。`addItem(text)` を呼び出し（`duration` パラメータなし）。
+`RegisterTask` と同一構造。`addItem(text)` を呼び出し（`duration` パラメータなし）。バリデーションは `RegisterTask` と同様に空文字時はエラーテキスト表示・モーダルを閉じない。
 
 ---
 

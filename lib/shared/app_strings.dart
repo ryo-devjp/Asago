@@ -66,6 +66,7 @@ abstract final class AppStrings {
   static const manageItemsButton = '持ち物を管理する';
   static const itemsModalTitle = '持ち物リスト';
   static const itemNameHint = '持ち物名を入力';
+  static const itemNameRequiredError = '持ち物名を入力してください';
 
   // ── 出発時刻設定 ─────────────────────────────────────────────
   static const departureTimeTitle = '出発時刻';

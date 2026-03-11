@@ -2,9 +2,12 @@
 
 ## 現在のテスト構成
 
-| ファイル                                 | 対象             | テスト種別 | ケース数 |
-| ---------------------------------------- | ---------------- | ---------- | -------: |
-| `test/home/widgets/count_down_test.dart` | `CountDownTimer` | 単体テスト |        3 |
+| ファイル                                           | 対象             | テスト種別     | ケース数 |
+| -------------------------------------------------- | ---------------- | -------------- | -------: |
+| `test/home/widgets/count_down_test.dart`           | `CountDownTimer` | 単体テスト     |        3 |
+| `test/home/widgets/countdown_card_test.dart`       | `CountdownCard`  | Widget テスト  |        1 |
+| `test/setting/widgets/register_task_test.dart`     | `RegisterTask`   | Widget テスト  |        3 |
+| `test/setting/widgets/register_items_test.dart`    | `RegisterItems`  | Widget テスト  |        3 |
 
 ## テストケース一覧
 
@@ -15,6 +18,22 @@
 | 1   | 初期化時に指定した分数のタイマーが開始されること                          | `CountDownTimer(minutes: 5)` で生成後の残り時間 | `remainingTime.inSeconds >= 299`                   |
 | 2   | setTargetTimeで過去の時刻を指定した場合、翌日の時刻としてセットされること | 現在時刻の1時間前を `setTargetTime()` に渡す    | `isTimeSet == true`, `remainingTime.inHours >= 22` |
 | 3   | stopAlertでアラート状態が解除されること                                   | `stopAlert()` 呼び出し後の状態                  | `isAlerting == false`                              |
+
+### RegisterTask（`test/setting/widgets/register_task_test.dart`）
+
+| #   | テスト名                              | 検証内容                           | 検証条件                                           |
+| --- | ------------------------------------- | ---------------------------------- | -------------------------------------------------- |
+| 1   | タスクを追加するボタンが表示されること | ボタンの存在確認                   | `findsOneWidget`                                   |
+| 2   | ボタンをタップするとモーダルが開くこと | モーダルタイトルの表示             | `findsOneWidget`                                   |
+| 3   | 空文字では保存されずモーダルが閉じないこと | 保存後のモーダル状態 + エラー表示 | モーダル継続表示 + `taskNameRequiredError`          |
+
+### RegisterItems（`test/setting/widgets/register_items_test.dart`）
+
+| #   | テスト名                              | 検証内容                           | 検証条件                                           |
+| --- | ------------------------------------- | ---------------------------------- | -------------------------------------------------- |
+| 1   | 持ち物を追加するボタンが表示されること | ボタンの存在確認                   | `findsOneWidget`                                   |
+| 2   | ボタンをタップするとモーダルが開くこと | モーダルタイトルの表示             | `findsOneWidget`                                   |
+| 3   | 空文字では保存されずモーダルが閉じないこと | 保存後のモーダル状態 + エラー表示 | モーダル継続表示 + `itemNameRequiredError`          |
 
 ## テスト実行
 

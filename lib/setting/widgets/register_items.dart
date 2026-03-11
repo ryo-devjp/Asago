@@ -45,84 +45,106 @@ class _RegisterItemsState extends State<RegisterItems> {
         ),
         onPressed: () {
           _controller.clear();
+          String? errorText;
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             builder: (BuildContext ctx) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: 24,
-                  right: 24,
-                  top: 24,
-                  bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: cs.onSurface.withAlpha(50),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+              return StatefulBuilder(
+                builder: (BuildContext ctx, StateSetter setModalState) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      top: 24,
+                      bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      AppStrings.itemsModalTitle,
-                      style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _controller,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: AppStrings.itemNameHint,
-                        filled: true,
-                        fillColor: cs.surfaceContainerHighest.withAlpha(80),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                        Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: cs.onSurface.withAlpha(50),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          AppStrings.itemsModalTitle,
+                          style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: _controller,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            errorText: errorText,
+                            hintText: AppStrings.itemNameHint,
+                            filled: true,
+                            fillColor: cs.surfaceContainerHighest.withAlpha(80),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                          ),
+                          onChanged: (_) {
+                            if (errorText != null) {
+                              setModalState(() => errorText = null);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text(AppStrings.cancelButton),
                               ),
                             ),
-                            child: const Text(AppStrings.cancelButton),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (_controller.text.trim().isNotEmpty) {
-                                await addItem(_controller.text.trim());
-                              }
-                              if (ctx.mounted) Navigator.pop(ctx);
-                            },
-                            child: const Text(AppStrings.saveButton),
-                          ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final itemName = _controller.text.trim();
+
+                                  if (itemName.isEmpty) {
+                                    setModalState(() {
+                                      errorText =
+                                          AppStrings.itemNameRequiredError;
+                                    });
+                                    return;
+                                  }
+
+                                  await addItem(itemName);
+
+                                  if (ctx.mounted) Navigator.pop(ctx);
+                                },
+                                child: const Text(AppStrings.saveButton),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  );
+                },
               );
             },
           );
