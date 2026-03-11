@@ -231,7 +231,7 @@ class _RegisterTaskState extends State<RegisterTask> {
                                   }
 
                                   await addTask(
-                                    _controller.text.trim(),
+                                    taskName,
                                     _duration,
                                   );
 
