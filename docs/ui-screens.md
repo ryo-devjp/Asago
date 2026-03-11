@@ -34,6 +34,7 @@ Homescreen
 └── CustomScrollView
     ├── SliverToBoxAdapter: "Today" ヘッダー
     ├── SliverToBoxAdapter: CountdownCard
+    ├── SliverToBoxAdapter: StatusEmojiCard
     ├── TaskSectionHeader (Sliver)
     ├── TaskSectionList (Sliver)
     ├── ItemSectionHeader (Sliver)
@@ -54,6 +55,44 @@ Homescreen
 | 出発ボタン     | タイムアップで `isAlerting` 時のみ表示。`FilledButton` で `stopAlert()` 呼び出し |
 
 タイムアップ時、カウントダウン表示色が `cs.primary` → `cs.error` に変化。
+
+### StatusEmojiCard
+
+**ファイル**: `lib/home/widgets/status_emoji_card.dart`
+
+出発時間から未完了タスクの所要時間を逆算し、余裕度に応じた顔文字＋メッセージを表示するカード。
+
+`AnimatedBuilder` で `CountDownTimer` を毎秒監視し、`ValueListenableBuilder` で Hive tasks Box を監視。ステータス判定は `DepartureStatus.evaluate()` に委譲。
+
+| ステータス | 条件（buffer = 残時間 - 未完了タスク所要時間合計） | 顔文字 | メッセージ             |
+| ---------- | -------------------------------------------------- | ------ | ---------------------- |
+| `relaxed`  | buffer ≥ 30分                                      | ☺️     | 余裕があります         |
+| `hurry`    | 15分 ≤ buffer < 30分                               | 😰     | そろそろ急ぎましょう   |
+| `critical` | buffer < 15分                                      | 🥶     | 時間がありません！     |
+| `overdue`  | 出発時間超過（`isAlerting`）                       | 💀     | 出発時間を過ぎています |
+
+タイマー未設定時はカード自体を非表示（`SizedBox.shrink()`）。
+
+顔文字は `BounceEmoji` ウィジェットで2秒周期の上下アニメーション付き。
+
+#### BounceEmoji
+
+**ファイル**: `lib/home/widgets/bounce_emoji.dart`
+
+子ウィジェットを上下にリズミカルに揺らすアニメーションラッパー。
+
+| 設定         | 値                                     |
+| ------------ | -------------------------------------- |
+| 周期         | 2秒（`AnimationController` duration）  |
+| 振動パターン | sin(2π × t) で中央→上→中央→下→中央     |
+| 振幅         | 14px                                   |
+| 実装         | `Transform.translate` + `Offset(0, y)` |
+
+#### DepartureStatus
+
+**ファイル**: `lib/home/widgets/departure_status.dart`
+
+ステータス判定ロジックを `enum` + `evaluate()` static メソッドとして分離。各 enum 値が `emoji` / `message` getter を持つ。
 
 ### TaskSummary
 
@@ -197,24 +236,26 @@ Hive `tasks` Box を `ValueListenableBuilder` で監視。
 
 ## ウィジェット一覧
 
-| ウィジェット        | ファイル                               | Stateful | Hive監視 | 責務                      |
-| ------------------- | -------------------------------------- | -------- | -------- | ------------------------- |
-| `BottomNav`         | `bottom_nav.dart`                      | —        | —        | タブナビゲーション        |
-| `Homescreen`        | `home/page/home_screen.dart`           | —        | —        | ホーム画面レイアウト      |
-| `CountdownCard`     | `home/widgets/countdown_card.dart`     | —        | `tasks`  | カウントダウン+サマリ表示 |
-| `TaskSummary`       | `home/widgets/task_summary.dart`       | —        | —        | タスク件数集計表示        |
-| `InfoRow`           | `home/widgets/info_row.dart`           | —        | —        | アイコン+ラベル+値の1行   |
-| `TaskTile`          | `home/widgets/task.dart`               | —        | —        | スワイプ完了タイル        |
-| `TaskSectionHeader` | `home/widgets/task_section.dart`       | —        | —        | タスクセクション見出し    |
-| `TaskSectionList`   | `home/widgets/task_section.dart`       | —        | `tasks`  | タスクリスト（Sliver）    |
-| `ItemSectionHeader` | `home/widgets/item_section.dart`       | —        | —        | 持ち物セクション見出し    |
-| `ItemSectionList`   | `home/widgets/item_section.dart`       | —        | `items`  | 持ち物リスト（Sliver）    |
-| `CompleteTaskList`  | `home/widgets/complete_task_list.dart` | —        | —        | 完了済み行+復元ボタン     |
-| `Settingscreen`     | `setting/page/setting_screen.dart`     | —        | —        | 設定画面レイアウト        |
-| `Timepicker`        | `setting/widgets/time_picker.dart`     | ○        | —        | 出発時刻設定              |
-| `RegisterTask`      | `setting/widgets/register_task.dart`   | ○        | —        | タスク登録モーダル        |
-| `RegisterItems`     | `setting/widgets/register_items.dart`  | ○        | —        | 持ち物登録モーダル        |
-| `SettingTaskList`   | `setting/widgets/task_list.dart`       | —        | `tasks`  | 登録済みタスク一覧        |
-| `SettingItemList`   | `setting/widgets/item_list.dart`       | —        | `items`  | 登録済み持ち物一覧        |
+| ウィジェット        | ファイル                               | Stateful | Hive監視 | 責務                        |
+| ------------------- | -------------------------------------- | -------- | -------- | --------------------------- |
+| `BottomNav`         | `bottom_nav.dart`                      | —        | —        | タブナビゲーション          |
+| `Homescreen`        | `home/page/home_screen.dart`           | —        | —        | ホーム画面レイアウト        |
+| `CountdownCard`     | `home/widgets/countdown_card.dart`     | —        | `tasks`  | カウントダウン+サマリ表示   |
+| `StatusEmojiCard`   | `home/widgets/status_emoji_card.dart`  | —        | `tasks`  | ステータス顔文字+メッセージ |
+| `BounceEmoji`       | `home/widgets/bounce_emoji.dart`       | ○        | —        | 上下バウンスアニメーション  |
+| `TaskSummary`       | `home/widgets/task_summary.dart`       | —        | —        | タスク件数集計表示          |
+| `InfoRow`           | `home/widgets/info_row.dart`           | —        | —        | アイコン+ラベル+値の1行     |
+| `TaskTile`          | `home/widgets/task.dart`               | —        | —        | スワイプ完了タイル          |
+| `TaskSectionHeader` | `home/widgets/task_section.dart`       | —        | —        | タスクセクション見出し      |
+| `TaskSectionList`   | `home/widgets/task_section.dart`       | —        | `tasks`  | タスクリスト（Sliver）      |
+| `ItemSectionHeader` | `home/widgets/item_section.dart`       | —        | —        | 持ち物セクション見出し      |
+| `ItemSectionList`   | `home/widgets/item_section.dart`       | —        | `items`  | 持ち物リスト（Sliver）      |
+| `CompleteTaskList`  | `home/widgets/complete_task_list.dart` | —        | —        | 完了済み行+復元ボタン       |
+| `Settingscreen`     | `setting/page/setting_screen.dart`     | —        | —        | 設定画面レイアウト          |
+| `Timepicker`        | `setting/widgets/time_picker.dart`     | ○        | —        | 出発時刻設定                |
+| `RegisterTask`      | `setting/widgets/register_task.dart`   | ○        | —        | タスク登録モーダル          |
+| `RegisterItems`     | `setting/widgets/register_items.dart`  | ○        | —        | 持ち物登録モーダル          |
+| `SettingTaskList`   | `setting/widgets/task_list.dart`       | —        | `tasks`  | 登録済みタスク一覧          |
+| `SettingItemList`   | `setting/widgets/item_list.dart`       | —        | `items`  | 登録済み持ち物一覧          |
 
 ---

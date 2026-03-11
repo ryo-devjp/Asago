@@ -29,6 +29,9 @@
 | `lib/home/page/home_screen.dart`           | UI           | ホーム画面レイアウト（Sliver構成）              |   58 |
 | `lib/home/widgets/count_down.dart`         | ロジック     | カウントダウンタイマー（ChangeNotifier）        |  101 |
 | `lib/home/widgets/countdown_card.dart`     | UI           | カウントダウン表示+タスクサマリカード           |   92 |
+| `lib/home/widgets/status_emoji_card.dart`  | UI           | ステータス顔文字+メッセージカード               |   82 |
+| `lib/home/widgets/bounce_emoji.dart`       | UI           | 上下バウンスアニメーションラッパー              |   52 |
+| `lib/home/widgets/departure_status.dart`   | ロジック     | 出発余裕度ステータス判定（enum）                |   53 |
 | `lib/home/widgets/task_summary.dart`       | UI           | タスク件数サマリ（全/完了/残）                  |   43 |
 | `lib/home/widgets/info_row.dart`           | UI           | アイコン+ラベル+値の1行表示                     |   46 |
 | `lib/home/widgets/task.dart`               | UI           | Dismissibleスワイプ完了タイル                   |   65 |
@@ -48,7 +51,7 @@
 | `lib/shared/item_service.g.dart`           | データ       | Hive TypeAdapter (自動生成)                     |   46 |
 | `lib/theme/app_theme.dart`                 | テーマ       | ライト/ダーク テーマ構築                        |   81 |
 
-**合計**: 24 Dartファイル / 1,838行
+**合計**: 27 Dartファイル / 2,025行
 
 ## 依存パッケージ
 

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:asago/home/widgets/count_down.dart';
 import 'package:asago/home/widgets/countdown_card.dart';
 import 'package:asago/home/widgets/item_section.dart';
+import 'package:asago/home/widgets/status_emoji_card.dart';
 import 'package:asago/home/widgets/task_section.dart';
 import 'package:asago/shared/app_strings.dart';
 
@@ -43,6 +44,11 @@ class Homescreen extends StatelessWidget {
             // カウントダウン リングカード
             SliverToBoxAdapter(
               child: CountdownCard(timerController: timerController),
+            ),
+
+            // ステータス顔文字カード
+            SliverToBoxAdapter(
+              child: StatusEmojiCard(timerController: timerController),
             ),
 
             // タスクセクション
