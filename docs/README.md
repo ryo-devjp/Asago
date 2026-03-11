@@ -42,6 +42,9 @@ lib/
 │   └── widgets/
 │       ├── count_down.dart      # CountDownTimer (ChangeNotifier)
 │       ├── countdown_card.dart  # カウントダウン+サマリカード
+│       ├── status_emoji_card.dart # ステータス顔文字カード
+│       ├── bounce_emoji.dart    # 上下バウンスアニメーション
+│       ├── departure_status.dart # ステータス判定ロジック
 │       ├── task_summary.dart    # タスク件数サマリ
 │       ├── info_row.dart        # アイコン+ラベル+値の1行
 │       ├── task.dart            # TaskTile (Dismissible)

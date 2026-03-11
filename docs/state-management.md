@@ -77,6 +77,7 @@ AnimatedBuilder(
 | ウィジェット      | 監視Box | 用途                                 |
 | ----------------- | ------- | ------------------------------------ |
 | `CountdownCard`   | `tasks` | タスクサマリ（全/完了/残）の自動更新 |
+| `StatusEmojiCard` | `tasks` | ステータス顔文字の余裕度判定更新     |
 | `TaskSectionList` | `tasks` | ホーム画面タスクリストの自動更新     |
 | `ItemSectionList` | `items` | ホーム画面持ち物リストの自動更新     |
 | `SettingTaskList` | `tasks` | 設定画面タスク一覧の自動更新         |
@@ -149,6 +150,7 @@ final sharedTimer = CountDownTimer();
     │
     ↓
 [CountDownTimer] ──notifyListeners()──→ [CountdownCard UI更新]
+                                      └→ [StatusEmojiCard UI更新]
     ↑
     │ setTargetTime()
     │

@@ -24,6 +24,17 @@ abstract final class AppStrings {
     String seconds,
   ) => '$hours時間$minutes分$seconds秒';
 
+  // ── ステータスカード ──────────────────────────────────────────
+  static const statusCardTitle = 'ステータス';
+  static const statusRelaxed = '余裕があります';
+  static const statusHurry = 'そろそろ急ぎましょう';
+  static const statusCritical = '時間がありません！';
+  static const statusOverdue = '出発時間を過ぎています';
+  static const statusEmojiRelaxed = '☺️';
+  static const statusEmojiHurry = '😰';
+  static const statusEmojiCritical = '🥶';
+  static const statusEmojiOverdue = '💀';
+
   // ── タスクサマリ ─────────────────────────────────────────────
   static const taskSummaryTotal = '全タスク';
   static const taskSummaryDone = '完了';
