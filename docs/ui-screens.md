@@ -218,24 +218,3 @@ Hive `tasks` Box を `ValueListenableBuilder` で監視。
 | `SettingItemList`   | `setting/widgets/item_list.dart`       | —        | `items`  | 登録済み持ち物一覧        |
 
 ---
-
-## UI文字列定義
-
-**ファイル**: `lib/shared/app_strings.dart`
-**方式**: `abstract final class AppStrings` による静的定数
-
-| カテゴリ         | 定数名                                                          | 値                                               |
-| ---------------- | --------------------------------------------------------------- | ------------------------------------------------ |
-| アプリ           | `appTitle`                                                      | Asago                                            |
-| ナビ             | `navHome` / `navSettings`                                       | ホーム / 設定                                    |
-| ホーム           | `homeHeader`                                                    | Today                                            |
-| カウントダウン   | `countdownCardTitle` / `departedButton`                         | 出発まで / 出発した！                            |
-| タスクサマリ     | `taskSummaryTotal` / `taskSummaryDone` / `taskSummaryRemaining` | 全タスク / 完了 / 残り                           |
-| タスクセクション | `taskSectionTitle` / `taskAllCompleted` / `restoreButton`       | タスク / 完了メッセージ / 戻す                   |
-| 持ち物セクション | `itemSectionTitle` / `itemAllCompleted`                         | 持ち物 / 確認完了メッセージ                      |
-| 設定             | `settingsHeader` / `departureTimeTitle` / `setTimeButton`       | 設定 / 出発時刻 / 時刻を設定                     |
-| モーダル         | `cancelButton` / `saveButton`                                   | キャンセル / 保存                                |
-| タスク登録       | `registerTaskButton` / `newTaskModalTitle` / `taskNameHint`     | タスクを追加する / 新しいタスク / タスク名を入力 |
-| 持ち物登録       | `addItemButton` / `itemsModalTitle` / `itemNameHint`            | 持ち物を追加する / 持ち物リスト / 持ち物名を入力 |
-
-**動的文字列**: `formattedDuration(h, m, s)`, `completedTaskSection(count)`, `completedItemSection(count)`, `taskDurationLabel(minutes)` ("所要時間：N分")
