@@ -48,6 +48,7 @@ class _RegisterTaskState extends State<RegisterTask> {
           _controller.clear();
           _duration = 10;
           final wheelController = FixedExtentScrollController(initialItem: 9);
+          String? errorText;
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -87,6 +88,7 @@ class _RegisterTaskState extends State<RegisterTask> {
                           controller: _controller,
                           autofocus: true,
                           decoration: InputDecoration(
+                            errorText: errorText,
                             hintText: AppStrings.taskNameHint,
                             filled: true,
                             fillColor: cs.surfaceContainerHighest.withAlpha(80),
@@ -99,6 +101,11 @@ class _RegisterTaskState extends State<RegisterTask> {
                               vertical: 14,
                             ),
                           ),
+                          onChanged: (_) {
+                            if (errorText != null) {
+                              setModalState(() => errorText = null);
+                            }
+                          },
                         ),
                         const SizedBox(height: 24),
                         Text(
@@ -213,12 +220,21 @@ class _RegisterTaskState extends State<RegisterTask> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  if (_controller.text.trim().isNotEmpty) {
-                                    await addTask(
-                                      _controller.text.trim(),
-                                      _duration,
-                                    );
+                                  final taskName = _controller.text.trim();
+
+                                  if (taskName.isEmpty) {
+                                    setModalState(() {
+                                      errorText =
+                                          AppStrings.taskNameRequiredError;
+                                    });
+                                    return;
                                   }
+
+                                  await addTask(
+                                    _controller.text.trim(),
+                                    _duration,
+                                  );
+
                                   if (ctx.mounted) Navigator.pop(ctx);
                                 },
                                 child: const Text(AppStrings.saveButton),
